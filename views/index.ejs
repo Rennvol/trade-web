@@ -1,124 +1,715 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
   <meta charset="utf-8">
-  <title>Trade.web.id - Harga Terkini</title>
-
+  <title>Trade.web.id - Harga Emas & Perak Real-time</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
-    body {
-      background: #0d1117;
-      color: #e6edf3;
-      font-family: "Segoe UI", sans-serif;
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --accent-gold: #fbbf24;
+      --accent-silver: #cbd5e1;
+      --table-border: #334155;
+      --up-color: #10b981;
+      --down-color: #ef4444;
+    }
+    
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
-
-    header {
-      padding: 18px;
-      background: #161b22;
-      box-shadow: 0px 2px 10px rgba(0,0,0,0.4);
+    
+    body { 
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      padding-bottom: 20px;
+    }
+    
+    header { 
+      padding: 20px 0;
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, #0f172a 100%);
+      text-align: center;
       position: sticky;
       top: 0;
-      z-index: 999;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      border-bottom: 1px solid var(--table-border);
     }
-
-    h1 {
-      margin: 0;
-      font-size: 26px;
-      letter-spacing: 1px;
-      color: #58a6ff;
-      text-align: center;
+    
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      color: #60a5fa;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
-
-    .container {
-      margin: 40px auto;
-      width: 90%;
-      max-width: 900px;
-      background: #161b22;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.4);
-      overflow-x: auto;
+    
+    .logo i {
+      color: var(--accent-gold);
     }
-
+    
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-top: 5px;
+    }
+    
+    .kurs-info {
+      display: inline-block;
+      background: rgba(96, 165, 250, 0.1);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      margin-top: 8px;
+      border: 1px solid rgba(96, 165, 250, 0.3);
+    }
+    
+    .container { 
+      width: 95%;
+      max-width: 800px;
+      margin: 30px auto;
+    }
+    
+    .table-container {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--table-border);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+    }
+    
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 600px;
     }
-
-    th, td {
-      padding: 15px;
-      border-bottom: 1px solid #30363d;
-      text-align: center;
+    
+    thead {
+      background: rgba(30, 41, 59, 0.9);
+      position: sticky;
+      top: 0;
     }
-
+    
     th {
-      background: #21262d;
-      color: #58a6ff;
+      padding: 18px 16px;
+      text-align: left;
+      font-weight: 700;
+      color: #60a5fa;
+      border-bottom: 2px solid var(--table-border);
       font-size: 15px;
     }
-
-    tr:hover td {
-      background: rgba(88, 166, 255, 0.05);
+    
+    th i {
+      margin-right: 8px;
+      color: var(--accent-gold);
     }
-
-    .small {
-      font-size: 13px;
-      color: #8b949e;
-      margin-top: 20px;
+    
+    tr {
+      border-bottom: 1px solid var(--table-border);
+      transition: background-color 0.2s;
+    }
+    
+    tr:hover {
+      background: rgba(51, 65, 85, 0.3);
+    }
+    
+    tr:last-child {
+      border-bottom: none;
+    }
+    
+    td {
+      padding: 16px;
+      vertical-align: middle;
+    }
+    
+    .commodity-name {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    
+    .commodity-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    
+    .gold-icon {
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(251, 191, 36, 0.1));
+      color: var(--accent-gold);
+      border: 2px solid rgba(251, 191, 36, 0.3);
+    }
+    
+    .silver-icon {
+      background: linear-gradient(135deg, rgba(203, 213, 225, 0.2), rgba(203, 213, 225, 0.1));
+      color: var(--accent-silver);
+      border: 2px solid rgba(203, 213, 225, 0.3);
+    }
+    
+    .price-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+    
+    .price-box {
+      padding: 12px;
+      border-radius: 10px;
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+    }
+    
+    .price-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .usd-price {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 5px;
+      color: #f1f5f9;
+    }
+    
+    .idr-price {
+      font-size: 16px;
+      font-weight: 600;
+      color: #86efac;
+    }
+    
+    .currency-symbol {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    .change-cell {
       text-align: center;
     }
-
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 20px;
+    
+    .change-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      min-width: 100px;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+    
+    .change-up {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
+      color: var(--up-color);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    
+    .change-down {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1));
+      color: var(--down-color);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    
+    .change-neutral {
+      background: linear-gradient(135deg, rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.1));
+      color: var(--text-secondary);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+    
+    .change-icon {
+      font-weight: bold;
+      font-size: 16px;
+    }
+    
+    .unit-info {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+      opacity: 0.7;
+    }
+    
+    .loading {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #f3f3f3;
+      border-top: 2px solid #60a5fa;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .pulse {
+      animation: pulse 1s ease-in-out;
+    }
+    
+    @keyframes pulse {
+      0% { background-color: rgba(96, 165, 250, 0.1); }
+      50% { background-color: rgba(96, 165, 250, 0.3); }
+      100% { background-color: rgba(96, 165, 250, 0.1); }
+    }
+    
+    footer { 
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin: 50px 0 30px;
+      padding-top: 20px;
+      border-top: 1px solid var(--table-border);
+    }
+    
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(30, 41, 59, 0.8);
+      padding: 12px 20px;
+      border-radius: 12px;
+      margin-top: 15px;
+      border: 1px solid var(--table-border);
+    }
+    
+    .update-btn {
+      background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    
+    .update-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+    
+    .update-btn:active {
+      transform: scale(0.98);
+    }
+    
+    .update-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--up-color);
+      color: white;
+      padding: 14px 22px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .notification.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .notification.error {
+      background: var(--down-color);
+    }
+    
+    .notification.info {
+      background: #60a5fa;
+    }
+    
+    .last-updated {
+      color: #60a5fa;
+      font-weight: 600;
+    }
+    
+    .source-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: rgba(96, 165, 250, 0.2);
+      border-radius: 20px;
+      font-size: 13px;
+      margin: 0 5px;
+      border: 1px solid rgba(96, 165, 250, 0.4);
+    }
+    
+    .mock-badge {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+    
+    .api-attribution {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    
+    .api-attribution a {
+      color: #86efac;
+      text-decoration: none;
+      margin: 0 5px;
+      font-weight: 500;
+    }
+    
+    .api-attribution a:hover {
+      text-decoration: underline;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        width: 98%;
+        margin: 20px auto;
       }
+      
       th, td {
-        padding: 10px;
+        padding: 12px 10px;
+      }
+      
+      .price-section {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      
+      .usd-price {
+        font-size: 18px;
+      }
+      
+      .idr-price {
+        font-size: 14px;
+      }
+      
+      .change-indicator {
+        padding: 8px 12px;
+        min-width: 80px;
         font-size: 14px;
       }
     }
   </style>
 </head>
-
 <body>
 
 <header>
-  <h1>📈 Trade.web.id – Harga Terkini</h1>
+  <div class="logo">
+    <i class="fas fa-chart-line"></i>
+    <span>Trade.web.id</span>
+  </div>
+  <div class="subtitle">Harga Emas & Perak Real-time</div>
+  <div class="kurs-info">
+    <i class="fas fa-exchange-alt"></i>
+    1 USD = Rp <span id="usd-rate"><%= usdToIdr.toLocaleString('id-ID') %></span>
+  </div>
 </header>
 
 <div class="container">
-  <table>
-    <tr><th>Asset</th><th>USD</th><th>IDR</th></tr>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 25%;">
+            <i class="fas fa-gem"></i>
+            Komoditas
+          </th>
+          <th style="width: 45%;">
+            <i class="fas fa-money-bill-wave"></i>
+            Harga per Gram
+          </th>
+          <th style="width: 30%;">
+            <i class="fas fa-chart-line"></i>
+            Perubahan 24h
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- GOLD ROW -->
+        <tr id="gold-row">
+          <td>
+            <div class="commodity-name">
+              <div class="commodity-icon gold-icon">
+                <i class="fas fa-crown"></i>
+              </div>
+              <div>
+                <div>Emas 24K (XAU)</div>
+                <div class="unit-info">Kadar 999.9 • 1 gram</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="price-section">
+              <div class="price-box">
+                <div class="price-label">
+                  <i class="fas fa-dollar-sign"></i>
+                  <span>Harga USD</span>
+                </div>
+                <div class="usd-price" id="gold-usd">
+                  $<%= prices.gold.gram_usd.toLocaleString('en-US', {minimumFractionDigits: 3}) %>
+                </div>
+              </div>
+              <div class="price-box">
+                <div class="price-label">
+                  <i class="fas fa-rupiah-sign"></i>
+                  <span>Harga IDR</span>
+                </div>
+                <div class="idr-price" id="gold-idr">
+                  Rp <%= formatNumber(prices.gold.gram_idr) %>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="change-cell">
+            <div class="change-indicator <%= prices.gold.change > 0 ? 'change-up' : prices.gold.change < 0 ? 'change-down' : 'change-neutral' %>" 
+                 id="gold-change">
+              <span class="change-icon"><%= getChangeIcon(prices.gold.change) %></span>
+              <span class="change-value"><%= Math.abs(prices.gold.change).toFixed(2) %>%</span>
+            </div>
+          </td>
+        </tr>
 
-    <tr>
-      <td>Bitcoin (BTC)</td>
-      <td>$<%= prices.btc.usd.toLocaleString() %></td>
-      <td>Rp<%= prices.btc.idr.toLocaleString() %></td>
-    </tr>
-
-    <tr>
-      <td>Ethereum (ETH)</td>
-      <td>$<%= prices.eth.usd.toLocaleString() %></td>
-      <td>Rp<%= prices.eth.idr.toLocaleString() %></td>
-    </tr>
-
-    <tr>
-      <td rowspan="2">Gold (XAU)</td>
-      <td>$<%= prices.gold.gram_usd.toLocaleString(undefined, {minimumFractionDigits:2}) %> / gram</td>
-      <td>Rp<%= prices.gold.gram_idr.toLocaleString() %> / gram</td>
-    </tr>
-    <tr>
-      <td>$<%= prices.gold.ounce_usd.toLocaleString(undefined, {minimumFractionDigits:2}) %> / oz</td>
-      <td>Rp<%= prices.gold.ounce_idr.toLocaleString() %> / oz</td>
-    </tr>
-  </table>
-
-  <p class="small">* Harga mungkin sedikit tertunda sesuai API</p>
+        <!-- SILVER ROW -->
+        <tr id="silver-row">
+          <td>
+            <div class="commodity-name">
+              <div class="commodity-icon silver-icon">
+                <i class="fas fa-gem"></i>
+              </div>
+              <div>
+                <div>Perak Murni (XAG)</div>
+                <div class="unit-info">Kadar 999 • 1 gram</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="price-section">
+              <div class="price-box">
+                <div class="price-label">
+                  <i class="fas fa-dollar-sign"></i>
+                  <span>Harga USD</span>
+                </div>
+                <div class="usd-price" id="silver-usd">
+                  $<%= prices.silver.gram_usd.toLocaleString('en-US', {minimumFractionDigits: 3}) %>
+                </div>
+              </div>
+              <div class="price-box">
+                <div class="price-label">
+                  <i class="fas fa-rupiah-sign"></i>
+                  <span>Harga IDR</span>
+                </div>
+                <div class="idr-price" id="silver-idr">
+                  Rp <%= formatNumber(prices.silver.gram_idr) %>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="change-cell">
+            <div class="change-indicator <%= prices.silver.change > 0 ? 'change-up' : prices.silver.change < 0 ? 'change-down' : 'change-neutral' %>" 
+                 id="silver-change">
+              <span class="change-icon"><%= getChangeIcon(prices.silver.change) %></span>
+              <span class="change-value"><%= Math.abs(prices.silver.change).toFixed(2) %>%</span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
+
+<footer>
+  <div>
+    <div style="margin-bottom: 10px;">
+      <span>Sumber: </span>
+      <span id="data-source" class="source-badge <%= success ? '' : 'mock-badge' %>">
+        <%= source %>
+      </span>
+    </div>
+    
+    <div class="api-attribution">
+      <i class="fas fa-code"></i>
+      Powered by: 
+      <a href="https://goldpricez.com" target="_blank" rel="nofollow sponsored">GoldPriceZ.com</a> • 
+      <a href="https://frankfurter.app" target="_blank" rel="nofollow">Frankfurter.app</a>
+    </div>
+  </div>
+  
+  <div class="status-bar">
+    <div>
+      <i class="fas fa-clock"></i>
+      <span class="last-updated">Update: <span id="last-update-time"><%= formatTime(lastUpdate) %></span></span>
+    </div>
+    
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div id="update-status">
+        <i class="fas fa-circle" style="color: #10b981; font-size: 10px;"></i>
+        <span style="margin-left: 5px;">Live</span>
+      </div>
+      <button class="update-btn" id="manual-update" onclick="updateData()">
+        <i class="fas fa-sync-alt"></i>
+        <span>Refresh</span>
+      </button>
+    </div>
+  </div>
+</footer>
+
+<div id="notification" class="notification"></div>
+
+<script>
+  // Update data via AJAX tanpa reload halaman
+  async function updateData() {
+    const btn = document.getElementById('manual-update');
+    const notification = document.getElementById('notification');
+    const tableRows = document.querySelectorAll('tbody tr');
+    
+    // Disable button selama update
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner loading"></i> Updating...';
+    
+    // Add updating effect
+    tableRows.forEach(row => row.style.opacity = '0.7');
+    
+    try {
+      // Fetch data dari API
+      const response = await fetch('/api/update');
+      const result = await response.json();
+      
+      if (result.success) {
+        // Update UI dengan data baru
+        updateUI(result.data, result.meta);
+        
+        // Show success notification
+        showNotification('✅ Data berhasil diperbarui!', 'success');
+        
+        // Update timestamp
+        document.getElementById('last-update-time').textContent = 
+          new Date(result.meta.last_update).toLocaleTimeString('id-ID');
+        
+        // Update source if changed
+        if (result.meta.source) {
+          const sourceBadge = document.getElementById('data-source');
+          sourceBadge.textContent = result.meta.source;
+          sourceBadge.className = `source-badge ${result.meta.source === 'Mock Data' ? 'mock-badge' : ''}`;
+        }
+      } else {
+        throw new Error('Update failed');
+      }
+      
+    } catch (error) {
+      console.error('Update error:', error);
+      showNotification('❌ Gagal memperbarui data', 'error');
+    } finally {
+      // Enable button kembali
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-sync-alt"></i><span>Refresh</span>';
+        tableRows.forEach(row => row.style.opacity = '1');
+      }, 1000);
+    }
+  }
+  
+  // Update UI dengan data baru
+  function updateUI(data, meta) {
+    // Update Gold
+    document.getElementById('gold-usd').textContent = 
+      `$${data.gold.gram_usd.toLocaleString('en-US', {minimumFractionDigits: 3})}`;
+    document.getElementById('gold-idr').textContent = 
+      `Rp ${data.gold.gram_idr.toLocaleString('id-ID')}`;
+    
+    const goldChange = document.getElementById('gold-change');
+    goldChange.querySelector('.change-value').textContent = `${Math.abs(data.gold.change).toFixed(2)}%`;
+    goldChange.className = `change-indicator ${data.gold.change > 0 ? 'change-up' : data.gold.change < 0 ? 'change-down' : 'change-neutral'}`;
+    goldChange.querySelector('.change-icon').textContent = getChangeIcon(data.gold.change);
+    
+    // Update Silver
+    document.getElementById('silver-usd').textContent = 
+      `$${data.silver.gram_usd.toLocaleString('en-US', {minimumFractionDigits: 3})}`;
+    document.getElementById('silver-idr').textContent = 
+      `Rp ${data.silver.gram_idr.toLocaleString('id-ID')}`;
+    
+    const silverChange = document.getElementById('silver-change');
+    silverChange.querySelector('.change-value').textContent = `${Math.abs(data.silver.change).toFixed(2)}%`;
+    silverChange.className = `change-indicator ${data.silver.change > 0 ? 'change-up' : data.silver.change < 0 ? 'change-down' : 'change-neutral'}`;
+    silverChange.querySelector('.change-icon').textContent = getChangeIcon(data.silver.change);
+    
+    // Update exchange rate
+    if (meta.usd_to_idr) {
+      document.getElementById('usd-rate').textContent = 
+        meta.usd_to_idr.toLocaleString('id-ID');
+    }
+    
+    // Add highlight animation
+    highlightUpdate('gold-row');
+    highlightUpdate('silver-row');
+  }
+  
+  // Highlight row yang diupdate
+  function highlightUpdate(rowId) {
+    const row = document.getElementById(rowId);
+    row.classList.add('pulse');
+    setTimeout(() => {
+      row.classList.remove('pulse');
+    }, 1000);
+  }
+  
+  // Helper functions
+  function getChangeIcon(change) {
+    return change > 0 ? '↗' : change < 0 ? '↘' : '→';
+  }
+  
+  // Show notification
+  function showNotification(message, type = 'info') {
+    const notification = document.getElementById('notification');
+    notification.textContent = message;
+    notification.className = `notification ${type} show`;
+    
+    setTimeout(() => {
+      notification.classList.remove('show');
+    }, 3000);
+  }
+  
+  // Auto-update setiap 30 detik
+  setInterval(() => {
+    updateData();
+  }, 60000);
+  
+  // Initial setup
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('Trade.web.id loaded successfully');
+  });
+</script>
 
 </body>
 </html>
